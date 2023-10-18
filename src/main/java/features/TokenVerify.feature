@@ -34,7 +34,7 @@ Feature: Security Token API calls
     And request {"username" : "supervisor", "password" : "tek_supervisor"}
     When method post
     Then status 200
-    And print resonse
+    And print response
     And path "api/token/verify"
     And param username = "wrongusername"
     And param token = response.token
