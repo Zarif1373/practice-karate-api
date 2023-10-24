@@ -1,3 +1,4 @@
+@Regression
 Feature: End to end account creation
 
   Background: Setup test
@@ -27,4 +28,52 @@ Feature: End to end account creation
     When method post
     Then status 201
       And print response
-
+      And assert response.email == autoEmail
+      * def createdAccountId = response.id
+      Given path "/api/accounts/add-account-address"
+      And param primaryPersonId = createdAccountId
+      And request
+      """
+      {
+  "addressType": "8055 Windrose",
+  "addressLine1": "asgfd",
+  "city": "Plano",
+  "state": "TX",
+  "postalCode": "23452",
+  "countryCode": "571",
+  "current": true
+}
+      """
+      When method post
+      Then status 201
+      And assert response.postalCode == 571
+      Given path "/api/accounts/add-account-car"
+      And param primaryPersonId = createdAccountId
+      And header Authorization = token
+      And request
+      """
+      {
+  "make": "Toyota",
+  "model": "Camry",
+  "year": "2023",
+  "licensePlate": "TX-123"
+}
+      """
+      When method post
+      Then status 201
+      And assert response.make == "Toyota"
+      Given path "/api/accounts/add-account-phone"
+      And param primaryPersonId = createdAccountId
+      And header Authorization = token
+      And request
+      """
+      {
+  "phoneNumber": "0987654321",
+  "phoneExtension": "",
+  "phoneTime": "Day",
+  "phoneType": "Cell"
+}
+      """
+      When method post
+      Then status 201
+      And assert response.phoneNumber == "0987654321"
