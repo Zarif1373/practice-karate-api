@@ -1,3 +1,4 @@
+@Regression
 Feature: Create Account Testing
 
 #  Story 9) Activity
@@ -37,3 +38,49 @@ Feature: Create Account Testing
     Then status 200
     And print response
     And match response contains {"message" :  "Account Successfully deleted" , "status" :  true}
+
+    Scenario: Create account with existing email /api/accounts/add-primary-account validate response
+      Given path "/api/accounts/add-primary-account"
+      * def email = "YY@gmail.com"
+      And request
+      """
+      {
+    "email": "#(email)",
+    "title": "Mr.",
+    "firstName": "Laal",
+    "lastName": "lakjsfl",
+    "gender": "MALE",
+    "maritalStatus": "MARRIED",
+    "employmentStatus": "SDET",
+    "dateOfBirth": "1697743209152"
+}
+      """
+      When method post
+      Then print response
+      Then status 201
+      * def createdAccountId = response.id
+      Given path "/api/accounts/add-primary-account"
+      And request
+      """
+      {
+    "email": "#(email)",
+    "title": "Mr.",
+    "firstName": "Laal",
+    "lastName": "lakjsfl",
+    "gender": "MALE",
+    "maritalStatus": "MARRIED",
+    "employmentStatus": "SDET",
+    "dateOfBirth": "1697743209152"
+}
+      """
+      When method post
+      Then print response
+      Then status 400
+      And assert response.errorMessage == "Account with email " + email + " is exist"
+      Given path "/api/accounts/delete-account"
+      And param primaryPersonId = createdAccountId
+      And header Authorization = token
+      When method delete
+      Then status 200
+      And print response
+      And match response contains {"message" :  "Account Successfully deleted" , "status" :  true}

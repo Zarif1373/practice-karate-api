@@ -2,11 +2,11 @@
 Feature: Plan Code Testing
 
   Background: Setup test
-    Given url "https://qa.insurance-api.tekschool-students.com"
+    Given url BASE_URL
 
   Scenario: Validate /api/plans/get-all-plan-code
     Given path "/api/token"
-    And request {"username" : "supervisor", "password" : "tek_supervisor"}
+    Given request {"username":"supervisor", "password":"tek_supervisor"}
     When method post
     Then status 200
     And print response

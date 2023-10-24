@@ -1,3 +1,4 @@
+@Regression
 Feature: Security Token API calls
 
   Background: Setup test
