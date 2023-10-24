@@ -31,7 +31,7 @@ Feature: Security Token API calls
     And assert response.errorMessage == "User WrongUsername not found"
 
   Scenario: Send request to /api/token with wrong password
-    Given url "https://qa.insurance-api.tekschool-students.com"
+    Given url BASE_URL
     And path "/api/token/"
     And request
       """
